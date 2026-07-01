@@ -1,0 +1,207 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Revert Unified API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "apikey": {
+        "key": "x-revert-api-token",
+        "value": "{{revertApiToken}}",
+        "in": "header"
+      }
+    },
+    "headers": [
+      { "key": "x-revert-t-id", "value": "{{tenantId}}" }
+    ]
+  },
+  "items": [
+    {
+      "info": { "name": "Connection", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Ping CRM", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/crm/ping" },
+          "docs": "Ping the CRM API to verify credentials and connection."
+        },
+        {
+          "info": { "name": "List Connections", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/connections" },
+          "docs": "List all connections for the account."
+        },
+        {
+          "info": { "name": "Get Connection", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/connection" },
+          "docs": "Get the connection for a given tenant (x-revert-t-id)."
+        },
+        {
+          "info": { "name": "Delete Connection", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.revert.dev/connection" },
+          "docs": "Revoke and delete the connection for a given tenant."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Metadata", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Get CRM Metadata", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/metadata/crms" },
+          "docs": "Get CRM integration metadata for the account."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Webhooks", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List Webhooks", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/webhooks" },
+          "docs": "List webhook subscriptions."
+        },
+        {
+          "info": { "name": "Create Webhook", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.revert.dev/webhooks",
+            "body": { "type": "json", "data": "{\n  \"url\": \"https://example.com/hook\",\n  \"events\": [\"connection.added\"]\n}" }
+          },
+          "docs": "Create a webhook subscription."
+        },
+        {
+          "info": { "name": "Delete Webhook", "type": "http" },
+          "http": { "method": "DELETE", "url": "https://api.revert.dev/webhooks" },
+          "docs": "Delete a webhook subscription."
+        }
+      ]
+    },
+    {
+      "info": { "name": "CRM Contacts", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List Contacts", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/crm/contacts" },
+          "docs": "List contacts from the connected CRM."
+        },
+        {
+          "info": { "name": "Get Contact", "type": "http" },
+          "http": { "method": "GET", "url": "https://api.revert.dev/crm/contacts/:id" },
+          "docs": "Get a single contact by id."
+        },
+        {
+          "info": { "name": "Create Contact", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.revert.dev/crm/contacts",
+            "body": { "type": "json", "data": "{\n  \"firstName\": \"Ada\",\n  \"lastName\": \"Lovelace\",\n  \"email\": \"ada@example.com\"\n}" }
+          },
+          "docs": "Create a contact in the connected CRM."
+        },
+        {
+          "info": { "name": "Update Contact", "type": "http" },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.revert.dev/crm/contacts/:id",
+            "body": { "type": "json", "data": "{\n  \"phone\": \"+15551234567\"\n}" }
+          },
+          "docs": "Update a contact by id."
+        },
+        {
+          "info": { "name": "Search Contacts", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.revert.dev/crm/contacts/search",
+            "body": { "type": "json", "data": "{\n  \"searchCriteria\": {}\n}" }
+          },
+          "docs": "Search contacts in the connected CRM."
+        }
+      ]
+    },
+    {
+      "info": { "name": "CRM Leads", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Leads", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/leads" }, "docs": "List leads." },
+        { "info": { "name": "Get Lead", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/leads/:id" }, "docs": "Get a lead by id." },
+        { "info": { "name": "Create Lead", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/leads", "body": { "type": "json", "data": "{}" } }, "docs": "Create a lead." },
+        { "info": { "name": "Update Lead", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/leads/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update a lead." },
+        { "info": { "name": "Search Leads", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/leads/search", "body": { "type": "json", "data": "{\n  \"searchCriteria\": {}\n}" } }, "docs": "Search leads." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Deals", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Deals", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/deals" }, "docs": "List deals." },
+        { "info": { "name": "Get Deal", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/deals/:id" }, "docs": "Get a deal by id." },
+        { "info": { "name": "Create Deal", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/deals", "body": { "type": "json", "data": "{}" } }, "docs": "Create a deal." },
+        { "info": { "name": "Update Deal", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/deals/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update a deal." },
+        { "info": { "name": "Search Deals", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/deals/search", "body": { "type": "json", "data": "{\n  \"searchCriteria\": {}\n}" } }, "docs": "Search deals." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Companies", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Companies", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/companies" }, "docs": "List companies." },
+        { "info": { "name": "Get Company", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/companies/:id" }, "docs": "Get a company by id." },
+        { "info": { "name": "Create Company", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/companies", "body": { "type": "json", "data": "{}" } }, "docs": "Create a company." },
+        { "info": { "name": "Update Company", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/companies/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update a company." },
+        { "info": { "name": "Search Companies", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/companies/search", "body": { "type": "json", "data": "{\n  \"searchCriteria\": {}\n}" } }, "docs": "Search companies." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Notes", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Notes", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/notes" }, "docs": "List notes." },
+        { "info": { "name": "Get Note", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/notes/:id" }, "docs": "Get a note by id." },
+        { "info": { "name": "Create Note", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/notes", "body": { "type": "json", "data": "{}" } }, "docs": "Create a note." },
+        { "info": { "name": "Update Note", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/notes/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update a note." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Tasks", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Tasks", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/tasks" }, "docs": "List tasks." },
+        { "info": { "name": "Get Task", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/tasks/:id" }, "docs": "Get a task by id." },
+        { "info": { "name": "Create Task", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/tasks", "body": { "type": "json", "data": "{}" } }, "docs": "Create a task." },
+        { "info": { "name": "Update Task", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/tasks/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update a task." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Events", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Events", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/events" }, "docs": "List events." },
+        { "info": { "name": "Get Event", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/events/:id" }, "docs": "Get an event by id." },
+        { "info": { "name": "Create Event", "type": "http" }, "http": { "method": "POST", "url": "https://api.revert.dev/crm/events", "body": { "type": "json", "data": "{}" } }, "docs": "Create an event." },
+        { "info": { "name": "Update Event", "type": "http" }, "http": { "method": "PATCH", "url": "https://api.revert.dev/crm/events/:id", "body": { "type": "json", "data": "{}" } }, "docs": "Update an event." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Users", "type": "folder" },
+      "items": [
+        { "info": { "name": "List Users", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/users" }, "docs": "List CRM users (record owners)." },
+        { "info": { "name": "Get User", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/users/:id" }, "docs": "Get a CRM user by id." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Properties", "type": "folder" },
+      "items": [
+        { "info": { "name": "Get Properties", "type": "http" }, "http": { "method": "GET", "url": "https://api.revert.dev/crm/properties/:object" }, "docs": "List available properties for a CRM object." }
+      ]
+    },
+    {
+      "info": { "name": "CRM Proxy", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Proxy Request", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://api.revert.dev/crm/proxy",
+            "body": { "type": "json", "data": "{\n  \"path\": \"/v3/objects/contacts\",\n  \"method\": \"GET\"\n}" }
+          },
+          "docs": "Passthrough a raw request to the connected provider's native API."
+        }
+      ]
+    }
+  ]
+}

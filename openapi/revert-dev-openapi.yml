@@ -1,0 +1,834 @@
+openapi: 3.0.3
+info:
+  title: Revert Unified API
+  description: >-
+    Revert is an open-source unified API for building product integrations. This
+    specification describes the hosted REST surface at api.revert.dev, focused on
+    the unified CRM category (contacts, leads, deals, companies, notes, tasks,
+    events, users), the passthrough proxy, connection management, integration
+    metadata, and webhooks. All CRM requests are authenticated with an
+    `x-revert-api-token` (your Revert API key) and target a specific customer
+    connection via `x-revert-t-id` (the tenant id captured when the customer
+    linked their third-party tool through Revert's managed OAuth flow). Revert is
+    AGPL-3.0 licensed and can be self-hosted.
+  termsOfService: https://revert.dev
+  contact:
+    name: Revert
+    url: https://revert.dev
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: '1.0'
+servers:
+  - url: https://api.revert.dev
+    description: Revert hosted API
+tags:
+  - name: Connection
+  - name: Metadata
+  - name: Webhook
+  - name: CRM Contacts
+  - name: CRM Leads
+  - name: CRM Deals
+  - name: CRM Companies
+  - name: CRM Notes
+  - name: CRM Tasks
+  - name: CRM Events
+  - name: CRM Users
+  - name: CRM Properties
+  - name: CRM Proxy
+components:
+  securitySchemes:
+    revertApiToken:
+      type: apiKey
+      in: header
+      name: x-revert-api-token
+      description: Your Revert API key (private token used from your backend).
+  parameters:
+    TenantId:
+      name: x-revert-t-id
+      in: header
+      required: true
+      description: The unique customer/tenant id used when the customer linked their account.
+      schema:
+        type: string
+    ApiVersion:
+      name: x-api-version
+      in: header
+      required: false
+      description: Optional Revert API version. Latest is used when omitted.
+      schema:
+        type: string
+    Fields:
+      name: fields
+      in: query
+      required: false
+      description: Comma-separated list of additional provider fields to return.
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned by a previous list response.
+      schema:
+        type: string
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: Number of records to return per page.
+      schema:
+        type: integer
+    Id:
+      name: id
+      in: path
+      required: true
+      description: The unified record id.
+      schema:
+        type: string
+  schemas:
+    UnifiedResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        result:
+          type: object
+    UnifiedListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        next:
+          type: string
+          nullable: true
+          description: Cursor for the next page, or null when there are no more records.
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            type: object
+    Contact:
+      type: object
+      properties:
+        id: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        additional: { type: object, description: Provider-specific fields passthrough. }
+    Lead:
+      type: object
+      properties:
+        id: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        additional: { type: object }
+    Deal:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        amount: { type: number }
+        stage: { type: string }
+        probability: { type: number }
+        associations: { type: object }
+        additional: { type: object }
+    Company:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        industry: { type: string }
+        phone: { type: string }
+        additional: { type: object }
+    Note:
+      type: object
+      properties:
+        id: { type: string }
+        content: { type: string }
+        associations: { type: object }
+        additional: { type: object }
+    Task:
+      type: object
+      properties:
+        id: { type: string }
+        subject: { type: string }
+        body: { type: string }
+        status: { type: string }
+        dueDate: { type: string, format: date-time }
+        additional: { type: object }
+    Event:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string }
+        subject: { type: string }
+        startDateTime: { type: string, format: date-time }
+        endDateTime: { type: string, format: date-time }
+        additional: { type: object }
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        email: { type: string }
+        additional: { type: object }
+    ProxyRequest:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Provider-native path to call, appended to the connected tool's base URL.
+        method:
+          type: string
+          enum: [GET, POST, PUT, PATCH, DELETE]
+        body:
+          type: object
+          description: Request body to forward to the provider.
+    Connection:
+      type: object
+      properties:
+        tenantId: { type: string }
+        tpId: { type: string, description: Third-party provider id (e.g. hubspot, sfdc). }
+        status: { type: string }
+        createdAt: { type: string, format: date-time }
+security:
+  - revertApiToken: []
+paths:
+  /crm/ping:
+    get:
+      tags: [Connection]
+      operationId: crmPing
+      summary: Ping the CRM API to verify credentials and connection.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Connection healthy.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+  /connections:
+    get:
+      tags: [Connection]
+      operationId: getConnections
+      summary: List all connections for the account.
+      responses:
+        '200':
+          description: A list of connections.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Connection' }
+  /connection:
+    get:
+      tags: [Connection]
+      operationId: getConnection
+      summary: Get the connection for a given tenant.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The connection.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Connection' }
+    delete:
+      tags: [Connection]
+      operationId: deleteConnection
+      summary: Revoke and delete the connection for a given tenant.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Connection deleted.
+  /metadata/crms:
+    get:
+      tags: [Metadata]
+      operationId: getCrmMetadata
+      summary: Get CRM integration metadata for the account.
+      description: Returns the supported apps, their status, and configuration used to render Revert's connection UI.
+      responses:
+        '200':
+          description: Integration metadata.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+  /webhooks:
+    get:
+      tags: [Webhook]
+      operationId: getWebhooks
+      summary: List webhook subscriptions.
+      responses:
+        '200':
+          description: A list of webhooks.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+    post:
+      tags: [Webhook]
+      operationId: createWebhook
+      summary: Create a webhook subscription.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url: { type: string }
+                events: { type: array, items: { type: string } }
+      responses:
+        '201':
+          description: Webhook created.
+    delete:
+      tags: [Webhook]
+      operationId: deleteWebhook
+      summary: Delete a webhook subscription.
+      responses:
+        '200':
+          description: Webhook deleted.
+  /crm/contacts:
+    get:
+      tags: [CRM Contacts]
+      operationId: getContacts
+      summary: List contacts from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/ApiVersion'
+        - $ref: '#/components/parameters/Fields'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of contacts.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Contacts]
+      operationId: createContact
+      summary: Create a contact in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Contact' }
+      responses:
+        '201':
+          description: Contact created.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+  /crm/contacts/{id}:
+    get:
+      tags: [CRM Contacts]
+      operationId: getContact
+      summary: Get a single contact by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Fields'
+      responses:
+        '200':
+          description: The contact.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+    patch:
+      tags: [CRM Contacts]
+      operationId: updateContact
+      summary: Update a contact by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Contact' }
+      responses:
+        '200':
+          description: Contact updated.
+  /crm/contacts/search:
+    post:
+      tags: [CRM Contacts]
+      operationId: searchContacts
+      summary: Search contacts in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                searchCriteria: { type: object }
+      responses:
+        '200':
+          description: Matching contacts.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+  /crm/leads:
+    get:
+      tags: [CRM Leads]
+      operationId: getLeads
+      summary: List leads from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of leads.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Leads]
+      operationId: createLead
+      summary: Create a lead in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Lead' }
+      responses:
+        '201':
+          description: Lead created.
+  /crm/leads/{id}:
+    get:
+      tags: [CRM Leads]
+      operationId: getLead
+      summary: Get a single lead by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The lead.
+    patch:
+      tags: [CRM Leads]
+      operationId: updateLead
+      summary: Update a lead by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Lead' }
+      responses:
+        '200':
+          description: Lead updated.
+  /crm/leads/search:
+    post:
+      tags: [CRM Leads]
+      operationId: searchLeads
+      summary: Search leads in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                searchCriteria: { type: object }
+      responses:
+        '200':
+          description: Matching leads.
+  /crm/deals:
+    get:
+      tags: [CRM Deals]
+      operationId: getDeals
+      summary: List deals from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of deals.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Deals]
+      operationId: createDeal
+      summary: Create a deal in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Deal' }
+      responses:
+        '201':
+          description: Deal created.
+  /crm/deals/{id}:
+    get:
+      tags: [CRM Deals]
+      operationId: getDeal
+      summary: Get a single deal by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The deal.
+    patch:
+      tags: [CRM Deals]
+      operationId: updateDeal
+      summary: Update a deal by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Deal' }
+      responses:
+        '200':
+          description: Deal updated.
+  /crm/deals/search:
+    post:
+      tags: [CRM Deals]
+      operationId: searchDeals
+      summary: Search deals in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                searchCriteria: { type: object }
+      responses:
+        '200':
+          description: Matching deals.
+  /crm/companies:
+    get:
+      tags: [CRM Companies]
+      operationId: getCompanies
+      summary: List companies from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of companies.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Companies]
+      operationId: createCompany
+      summary: Create a company in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Company' }
+      responses:
+        '201':
+          description: Company created.
+  /crm/companies/{id}:
+    get:
+      tags: [CRM Companies]
+      operationId: getCompany
+      summary: Get a single company by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The company.
+    patch:
+      tags: [CRM Companies]
+      operationId: updateCompany
+      summary: Update a company by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Company' }
+      responses:
+        '200':
+          description: Company updated.
+  /crm/companies/search:
+    post:
+      tags: [CRM Companies]
+      operationId: searchCompanies
+      summary: Search companies in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                searchCriteria: { type: object }
+      responses:
+        '200':
+          description: Matching companies.
+  /crm/notes:
+    get:
+      tags: [CRM Notes]
+      operationId: getNotes
+      summary: List notes from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of notes.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Notes]
+      operationId: createNote
+      summary: Create a note in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Note' }
+      responses:
+        '201':
+          description: Note created.
+  /crm/notes/{id}:
+    get:
+      tags: [CRM Notes]
+      operationId: getNote
+      summary: Get a single note by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The note.
+    patch:
+      tags: [CRM Notes]
+      operationId: updateNote
+      summary: Update a note by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Note' }
+      responses:
+        '200':
+          description: Note updated.
+  /crm/tasks:
+    get:
+      tags: [CRM Tasks]
+      operationId: getTasks
+      summary: List tasks from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of tasks.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Tasks]
+      operationId: createTask
+      summary: Create a task in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Task' }
+      responses:
+        '201':
+          description: Task created.
+  /crm/tasks/{id}:
+    get:
+      tags: [CRM Tasks]
+      operationId: getTask
+      summary: Get a single task by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The task.
+    patch:
+      tags: [CRM Tasks]
+      operationId: updateTask
+      summary: Update a task by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Task' }
+      responses:
+        '200':
+          description: Task updated.
+  /crm/events:
+    get:
+      tags: [CRM Events]
+      operationId: getEvents
+      summary: List events from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of events.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+    post:
+      tags: [CRM Events]
+      operationId: createEvent
+      summary: Create an event in the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Event' }
+      responses:
+        '201':
+          description: Event created.
+  /crm/events/{id}:
+    get:
+      tags: [CRM Events]
+      operationId: getEvent
+      summary: Get a single event by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The event.
+    patch:
+      tags: [CRM Events]
+      operationId: updateEvent
+      summary: Update an event by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Event' }
+      responses:
+        '200':
+          description: Event updated.
+  /crm/users:
+    get:
+      tags: [CRM Users]
+      operationId: getUsers
+      summary: List CRM users (record owners) from the connected CRM.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of users.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedListResponse' }
+  /crm/users/{id}:
+    get:
+      tags: [CRM Users]
+      operationId: getUser
+      summary: Get a single CRM user by id.
+      parameters:
+        - $ref: '#/components/parameters/Id'
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The user.
+  /crm/properties/{object}:
+    get:
+      tags: [CRM Properties]
+      operationId: getProperties
+      summary: List available properties for a CRM object.
+      parameters:
+        - name: object
+          in: path
+          required: true
+          description: The CRM object type (e.g. contact, deal, company).
+          schema: { type: string }
+        - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: Available object properties.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UnifiedResponse' }
+  /crm/proxy:
+    post:
+      tags: [CRM Proxy]
+      operationId: crmProxy
+      summary: Passthrough a raw request to the connected provider's native API.
+      description: >-
+        Forwards the supplied path, method, and body to the underlying connected
+        CRM using Revert's managed OAuth token, for provider-specific endpoints not
+        yet covered by the unified model.
+      parameters:
+        - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProxyRequest' }
+      responses:
+        '200':
+          description: Raw provider response, passed through.
+          content:
+            application/json:
+              schema: { type: object }

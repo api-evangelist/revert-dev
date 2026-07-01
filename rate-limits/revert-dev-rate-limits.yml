@@ -1,0 +1,59 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Revert
+providerId: revert-dev
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: false
+tags:
+- Unified API
+- Integrations
+- CRM
+- Rate Limiting
+- Quotas
+- Throttling
+description: >-
+  Revert brokers calls to many downstream third-party providers, so effective
+  throughput is bounded by two layers: Revert's own hosted API limits and the
+  rate limits of each connected provider (Salesforce, HubSpot, Zoho, Pipedrive,
+  Close, etc.). Revert normalizes provider throttling responses. When self-hosting
+  (AGPL-3.0), Revert-side limits are whatever you configure on your own
+  deployment; only the downstream provider limits apply. Specific hosted numeric
+  limits are not published and are not reconciled in this artifact.
+notes: >-
+  On reconciliation, confirm any hosted plan RPM/quota values with Revert and
+  document per-provider passthrough limits. Downstream provider limits change
+  independently of Revert.
+sources:
+- https://docs.revert.dev
+- https://revert.dev
+- https://github.com/revertinc/revert
+responseCodes:
+  throttled: 429
+limits:
+- name: Revert Hosted API Requests
+  scope: account
+  metric: requests
+  limit: see provider documentation
+  notes: Hosted-plan request limits; not published, tier-dependent. Not applicable to self-hosted deployments.
+- name: Downstream Provider Limits
+  scope: connection
+  metric: requests
+  limit: varies by connected provider
+  notes: Each connected CRM (Salesforce, HubSpot, Zoho, Pipedrive, Close, etc.) enforces its own rate limits, which pass through Revert.
+- name: Proxy Passthrough
+  scope: connection
+  metric: requests
+  limit: bounded by downstream provider
+  notes: Proxy calls are subject to the underlying provider's native rate limits.
+policies:
+- name: Provider Throttling Passthrough
+  description: When a downstream provider returns 429, Revert surfaces the throttle to the caller.
+- name: Automatic Retry
+  description: Revert includes an API retry mechanism that automatically retries certain failed downstream calls.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

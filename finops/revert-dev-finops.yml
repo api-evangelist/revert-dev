@@ -1,0 +1,92 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Revert
+providerId: revert-dev
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: false
+tags:
+- Unified API
+- Integrations
+- CRM
+- Open Source
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Revert spend. Revert is AGPL-3.0 open source and self-hostable,
+  so one cost path is your own infrastructure (compute, database, egress) with no
+  license fee. The alternative is Revert's hosted cloud, billed on a
+  subscription/connected-account basis. Either way, downstream third-party
+  provider API costs (CRM seats, API add-ons) are billed by those providers, not
+  by Revert. Confirm hosted pricing against revert.dev before treating rates as
+  reconciled.
+notes: >-
+  Revert does not publish granular usage rates; hosted cost is subscription-style.
+  Model self-hosted infrastructure cost separately from any hosted-plan fee.
+sources:
+- https://revert.dev
+- https://github.com/revertinc/revert
+- https://docs.revert.dev
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Revert
+serviceCategory: Integration and Automation
+billingModel:
+  pricingCategory: Subscription
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Revert Unified API
+  ServiceCategory: Integration and Automation
+  ProviderName: Revert
+  PublisherName: Revert
+  InvoiceIssuerName: Revert
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Subscription
+meters:
+- name: connected_accounts
+  description: Number of connected customer accounts (connections) under management on the hosted plan.
+  unit: connections
+  aggregation: max
+  dimensions:
+  - account
+  - provider
+- name: api_requests
+  description: Unified API and proxy requests made through Revert's hosted service.
+  unit: requests
+  aggregation: sum
+  dimensions:
+  - account
+  - api
+  - provider
+- name: self_hosted_infrastructure
+  description: Compute, database, and egress cost of running a self-hosted AGPL-3.0 Revert deployment.
+  unit: hours
+  aggregation: sum
+  dimensions:
+  - account
+  - environment
+principles:
+- name: Visibility
+  description: Track connected-account counts and per-provider request volume; for self-hosting, monitor infrastructure spend.
+- name: Allocation
+  description: Tag connections and API keys per customer/tenant (x-revert-t-id) to map cost to the right internal owner or customer.
+- name: Optimization
+  description: Consider self-hosting (AGPL-3.0) to remove per-connection hosted fees when infra scale is favorable; prune stale connections; cache reads to reduce downstream provider calls.
+- name: Accountability
+  description: Assign owners per integration category; review connected-account growth and downstream provider API add-on costs monthly.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

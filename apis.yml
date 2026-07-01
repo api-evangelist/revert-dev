@@ -1,0 +1,306 @@
+aid: revert-dev
+url: https://raw.githubusercontent.com/api-evangelist/revert-dev/refs/heads/main/apis.yml
+name: Revert
+kind: company
+description: Revert is an open-source unified API for building product integrations.
+  A single normalized interface fronts many third-party SaaS providers across categories
+  like CRM, with managed OAuth connections, a unified data model (contacts, leads,
+  deals, companies, notes, tasks, events, users), a passthrough proxy for provider-specific
+  calls, and webhooks. Revert is AGPL-3.0 licensed and self-hostable, with a hosted
+  cloud offering.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Unified API
+- Integrations
+- CRM
+- iPaaS
+- Open Source
+- OAuth
+created: '2026-07-01'
+modified: '2026-07-01'
+specificationVersion: '0.19'
+apis:
+- aid: revert-dev:revert-dev-connection-api
+  name: Revert Connection API
+  tags:
+  - Connections
+  - OAuth
+  - Integrations
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/connection
+  baseURL: https://api.revert.dev
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/connection
+    type: Documentation
+  - url: https://docs.revert.dev/api-reference/api-reference/connection
+    type: APIReference
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Manage the connections a customer establishes to third-party tools
+    through Revert's managed OAuth flow. Look up, list, and revoke connections keyed
+    by tenant id (x-revert-t-id).
+- aid: revert-dev:revert-dev-crm-contacts-api
+  name: Revert Unified CRM Contacts API
+  tags:
+  - CRM
+  - Contacts
+  - Unified API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/contact
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/contact
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, update, and search contacts across any connected
+    CRM (Salesforce, HubSpot, Zoho, Pipedrive, Close, and more) using one normalized
+    contact model.
+- aid: revert-dev:revert-dev-crm-leads-api
+  name: Revert Unified CRM Leads API
+  tags:
+  - CRM
+  - Leads
+  - Unified API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/lead
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/lead
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, update, and search leads across connected CRMs using
+    Revert's unified lead schema.
+- aid: revert-dev:revert-dev-crm-deals-api
+  name: Revert Unified CRM Deals API
+  tags:
+  - CRM
+  - Deals
+  - Unified API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/deal
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/deal
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, update, and search deals (opportunities) across
+    connected CRMs using one normalized deal model.
+- aid: revert-dev:revert-dev-crm-companies-api
+  name: Revert Unified CRM Companies API
+  tags:
+  - CRM
+  - Companies
+  - Accounts
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/company
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/company
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, update, and search companies (accounts) across connected
+    CRMs using Revert's unified company schema.
+- aid: revert-dev:revert-dev-crm-notes-api
+  name: Revert Unified CRM Notes API
+  tags:
+  - CRM
+  - Notes
+  - Unified API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/note
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/note
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, and update notes attached to CRM records across
+    connected CRMs.
+- aid: revert-dev:revert-dev-crm-tasks-api
+  name: Revert Unified CRM Tasks API
+  tags:
+  - CRM
+  - Tasks
+  - Unified API
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/task
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/task
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, and update tasks across connected CRMs using Revert's
+    unified task model.
+- aid: revert-dev:revert-dev-crm-events-api
+  name: Revert Unified CRM Events API
+  tags:
+  - CRM
+  - Events
+  - Calendar
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/event
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/event
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read, list, create, and update calendar events / activities across connected
+    CRMs using one normalized event model.
+- aid: revert-dev:revert-dev-crm-users-api
+  name: Revert Unified CRM Users API
+  tags:
+  - CRM
+  - Users
+  - Owners
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/user
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/user
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Read and list CRM users (record owners) across connected CRMs, useful
+    for owner assignment and reference lookups.
+- aid: revert-dev:revert-dev-crm-proxy-api
+  name: Revert CRM Proxy (Passthrough) API
+  tags:
+  - Proxy
+  - Passthrough
+  - Escape Hatch
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/proxy
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/proxy
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Passthrough proxy that forwards a raw request to the underlying connected
+    provider's native API using Revert's managed OAuth token, so you can reach provider-specific
+    endpoints not yet covered by the unified model.
+- aid: revert-dev:revert-dev-crm-properties-api
+  name: Revert CRM Properties & Field Mapping API
+  tags:
+  - Properties
+  - Field Mapping
+  - Custom Fields
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/crm/properties
+  baseURL: https://api.revert.dev/crm
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/crm/properties
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: List a connected CRM's available object properties and manage field
+    mappings between provider custom fields and Revert's unified schema.
+- aid: revert-dev:revert-dev-metadata-api
+  name: Revert Metadata API
+  tags:
+  - Metadata
+  - Integrations
+  - Catalog
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/metadata
+  baseURL: https://api.revert.dev
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/metadata
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Retrieve integration metadata for an account, including the list of
+    supported apps, their status, and the configuration needed to render Revert's connection
+    UI.
+- aid: revert-dev:revert-dev-webhooks-api
+  name: Revert Webhooks API
+  tags:
+  - Webhooks
+  - Events
+  - Notifications
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://docs.revert.dev/api-reference/api-reference/webhook
+  baseURL: https://api.revert.dev
+  properties:
+  - url: https://docs.revert.dev/api-reference/api-reference/webhook
+    type: Documentation
+  - url: openapi/revert-dev-openapi.yml
+    type: OpenAPI
+  - url: collections/revert-dev.postman_collection.json
+    type: PostmanCollection
+  - url: collections/revert-dev.opencollection.json
+    type: OpenCollection
+  description: Register and manage webhook subscriptions so Revert can notify your backend
+    when connection and record events happen across connected third-party tools.
+common:
+- type: GitHubOrganization
+  url: https://github.com/revertinc
+- type: LinkedIn
+  url: https://www.linkedin.com/company/revertdev
+- type: Website
+  url: https://revert.dev
+- type: Documentation
+  url: https://docs.revert.dev
+- type: Plans
+  url: plans/revert-dev-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/revert-dev-rate-limits.yml
+- type: FinOps
+  url: finops/revert-dev-finops.yml
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "Revert Unified API",
+    "description": "Revert is an open-source unified API for building product integrations. This collection covers connection management, unified CRM (contacts, leads, deals, companies, notes, tasks, events, users), CRM properties, the passthrough proxy, metadata, and webhooks. Auth uses the x-revert-api-token header; CRM calls are scoped to a customer connection with x-revert-t-id.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      { "key": "key", "value": "x-revert-api-token" },
+      { "key": "value", "value": "{{revertApiToken}}" },
+      { "key": "in", "value": "header" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://api.revert.dev" },
+    { "key": "revertApiToken", "value": "" },
+    { "key": "tenantId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Connection",
+      "item": [
+        {
+          "name": "Ping CRM",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ],
+            "url": { "raw": "{{baseUrl}}/crm/ping", "host": [ "{{baseUrl}}" ], "path": [ "crm", "ping" ] }
+          }
+        },
+        {
+          "name": "List Connections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/connections", "host": [ "{{baseUrl}}" ], "path": [ "connections" ] }
+          }
+        },
+        {
+          "name": "Get Connection",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ],
+            "url": { "raw": "{{baseUrl}}/connection", "host": [ "{{baseUrl}}" ], "path": [ "connection" ] }
+          }
+        },
+        {
+          "name": "Delete Connection",
+          "request": {
+            "method": "DELETE",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ],
+            "url": { "raw": "{{baseUrl}}/connection", "host": [ "{{baseUrl}}" ], "path": [ "connection" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metadata",
+      "item": [
+        {
+          "name": "Get CRM Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/metadata/crms", "host": [ "{{baseUrl}}" ], "path": [ "metadata", "crms" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "List Webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": [ "{{baseUrl}}" ], "path": [ "webhooks" ] }
+          }
+        },
+        {
+          "name": "Create Webhook",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"url\": \"https://example.com/hook\",\n  \"events\": [\"connection.added\"]\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": [ "{{baseUrl}}" ], "path": [ "webhooks" ] }
+          }
+        },
+        {
+          "name": "Delete Webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/webhooks", "host": [ "{{baseUrl}}" ], "path": [ "webhooks" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CRM Contacts",
+      "item": [
+        {
+          "name": "List Contacts",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ],
+            "url": { "raw": "{{baseUrl}}/crm/contacts", "host": [ "{{baseUrl}}" ], "path": [ "crm", "contacts" ] }
+          }
+        },
+        {
+          "name": "Get Contact",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ],
+            "url": { "raw": "{{baseUrl}}/crm/contacts/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "contacts", ":id" ], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Create Contact",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"firstName\": \"Ada\",\n  \"lastName\": \"Lovelace\",\n  \"email\": \"ada@example.com\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/crm/contacts", "host": [ "{{baseUrl}}" ], "path": [ "crm", "contacts" ] }
+          }
+        },
+        {
+          "name": "Update Contact",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"phone\": \"+15551234567\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/crm/contacts/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "contacts", ":id" ], "variable": [ { "key": "id", "value": "" } ] }
+          }
+        },
+        {
+          "name": "Search Contacts",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"searchCriteria\": {}\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/crm/contacts/search", "host": [ "{{baseUrl}}" ], "path": [ "crm", "contacts", "search" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CRM Leads",
+      "item": [
+        { "name": "List Leads", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/leads", "host": [ "{{baseUrl}}" ], "path": [ "crm", "leads" ] } } },
+        { "name": "Get Lead", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/leads/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "leads", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Lead", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/leads", "host": [ "{{baseUrl}}" ], "path": [ "crm", "leads" ] } } },
+        { "name": "Update Lead", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/leads/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "leads", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Search Leads", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"searchCriteria\": {}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/leads/search", "host": [ "{{baseUrl}}" ], "path": [ "crm", "leads", "search" ] } } }
+      ]
+    },
+    {
+      "name": "CRM Deals",
+      "item": [
+        { "name": "List Deals", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/deals", "host": [ "{{baseUrl}}" ], "path": [ "crm", "deals" ] } } },
+        { "name": "Get Deal", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/deals/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "deals", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Deal", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/deals", "host": [ "{{baseUrl}}" ], "path": [ "crm", "deals" ] } } },
+        { "name": "Update Deal", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/deals/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "deals", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Search Deals", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"searchCriteria\": {}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/deals/search", "host": [ "{{baseUrl}}" ], "path": [ "crm", "deals", "search" ] } } }
+      ]
+    },
+    {
+      "name": "CRM Companies",
+      "item": [
+        { "name": "List Companies", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/companies", "host": [ "{{baseUrl}}" ], "path": [ "crm", "companies" ] } } },
+        { "name": "Get Company", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/companies/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "companies", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Company", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/companies", "host": [ "{{baseUrl}}" ], "path": [ "crm", "companies" ] } } },
+        { "name": "Update Company", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/companies/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "companies", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Search Companies", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{\n  \"searchCriteria\": {}\n}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/companies/search", "host": [ "{{baseUrl}}" ], "path": [ "crm", "companies", "search" ] } } }
+      ]
+    },
+    {
+      "name": "CRM Notes",
+      "item": [
+        { "name": "List Notes", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/notes", "host": [ "{{baseUrl}}" ], "path": [ "crm", "notes" ] } } },
+        { "name": "Get Note", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/notes/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "notes", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Note", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/notes", "host": [ "{{baseUrl}}" ], "path": [ "crm", "notes" ] } } },
+        { "name": "Update Note", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/notes/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "notes", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } }
+      ]
+    },
+    {
+      "name": "CRM Tasks",
+      "item": [
+        { "name": "List Tasks", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/tasks", "host": [ "{{baseUrl}}" ], "path": [ "crm", "tasks" ] } } },
+        { "name": "Get Task", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/tasks/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "tasks", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Task", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/tasks", "host": [ "{{baseUrl}}" ], "path": [ "crm", "tasks" ] } } },
+        { "name": "Update Task", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/tasks/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "tasks", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } }
+      ]
+    },
+    {
+      "name": "CRM Events",
+      "item": [
+        { "name": "List Events", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/events", "host": [ "{{baseUrl}}" ], "path": [ "crm", "events" ] } } },
+        { "name": "Get Event", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/events/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "events", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } },
+        { "name": "Create Event", "request": { "method": "POST", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/events", "host": [ "{{baseUrl}}" ], "path": [ "crm", "events" ] } } },
+        { "name": "Update Event", "request": { "method": "PATCH", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ], "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{baseUrl}}/crm/events/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "events", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } }
+      ]
+    },
+    {
+      "name": "CRM Users",
+      "item": [
+        { "name": "List Users", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/users", "host": [ "{{baseUrl}}" ], "path": [ "crm", "users" ] } } },
+        { "name": "Get User", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/users/:id", "host": [ "{{baseUrl}}" ], "path": [ "crm", "users", ":id" ], "variable": [ { "key": "id", "value": "" } ] } } }
+      ]
+    },
+    {
+      "name": "CRM Properties",
+      "item": [
+        { "name": "Get Properties", "request": { "method": "GET", "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" } ], "url": { "raw": "{{baseUrl}}/crm/properties/:object", "host": [ "{{baseUrl}}" ], "path": [ "crm", "properties", ":object" ], "variable": [ { "key": "object", "value": "contact" } ] } } }
+      ]
+    },
+    {
+      "name": "CRM Proxy",
+      "item": [
+        {
+          "name": "Proxy Request",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "x-revert-t-id", "value": "{{tenantId}}" }, { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"path\": \"/v3/objects/contacts\",\n  \"method\": \"GET\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/crm/proxy", "host": [ "{{baseUrl}}" ], "path": [ "crm", "proxy" ] }
+          }
+        }
+      ]
+    }
+  ]
+}

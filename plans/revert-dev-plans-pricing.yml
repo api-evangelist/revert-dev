@@ -1,0 +1,103 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Revert
+providerId: revert-dev
+created: '2026-07-01'
+modified: '2026-07-01'
+reconciled: false
+tags:
+- Unified API
+- Integrations
+- CRM
+- Open Source
+- Plans
+description: >-
+  Revert is an open-source project licensed under AGPL-3.0, so the full unified
+  API can be self-hosted at no license cost. Revert also offers a hosted cloud
+  service. Publicly published cloud pricing is limited; the tiers below are
+  modeled from Revert's positioning (a free/community open-source path plus paid
+  hosted tiers gated on connected accounts, API usage, and support) and should be
+  reconciled against revert.dev/pricing when values are confirmed.
+notes: >-
+  Revert does not publish a fully detailed price sheet in the same way usage-based
+  API providers do; hosted-tier limits and prices are subject to a sales
+  conversation. The Open Source tier is authoritative (AGPL-3.0, self-host).
+sources:
+- https://revert.dev
+- https://github.com/revertinc/revert
+- https://docs.revert.dev
+plans:
+- id: revert-dev-open-source
+  name: Open Source (Self-Hosted)
+  type: free
+  description: >-
+    The complete Revert unified API, connection UI, and integrations, licensed
+    AGPL-3.0 and self-hosted via Docker. No license fee; you run and pay for your
+    own infrastructure and manage your own third-party OAuth apps.
+  entries:
+  - label: Self-Hosted Deployment
+    name: self_hosted
+    type: flat
+    metric: license
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: $0 (AGPL-3.0, self-hosted infrastructure costs apply)
+    userMultiplied: false
+  elements:
+  - name: Unified CRM API
+  - name: Passthrough Proxy
+  - name: Managed OAuth Flow
+  - name: Connection UI
+  - name: Webhooks
+  - name: Community Support
+- id: revert-dev-cloud-starter
+  name: Cloud Starter
+  type: subscription
+  description: >-
+    Revert-hosted cloud with managed infrastructure, the connection UI, and a
+    starter allowance of connected customer accounts. Pricing confirmed via
+    revert.dev.
+  entries:
+  - label: Connected Accounts
+    name: connected_accounts
+    type: subscription
+    metric: connections
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: see revert.dev for current cloud pricing
+    userMultiplied: true
+  elements:
+  - name: Hosted Unified API
+  - name: Managed OAuth
+  - name: Connection UI
+  - name: Webhooks
+- id: revert-dev-cloud-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Volume connected-account commitments, higher rate limits, SSO/security review,
+    SLAs, and dedicated support. Contact Revert sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Custom Volume
+  - name: Higher Rate Limits
+  - name: SLA & Priority Support
+  - name: Security Review
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

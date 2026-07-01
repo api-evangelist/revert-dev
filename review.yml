@@ -1,0 +1,78 @@
+aid: revert-dev
+name: Revert
+review:
+  question: Does Revert expose a documented public WebSocket or streaming API?
+  answer: false
+  date: '2026-07-01'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was created. Revert's asynchronous surface is HTTP
+    webhooks (Revert POSTs to a subscriber URL on connection/record events),
+    not a WebSocket or Server-Sent Events stream, so there is no streaming
+    channel to model in AsyncAPI at this time.
+findings:
+  summary: |
+    Revert is an open-source (AGPL-3.0) unified API for product integrations,
+    exposed as a REST (HTTPS) service at https://api.revert.dev. The unified
+    CRM surface (contacts, leads, deals, companies, notes, tasks, events,
+    users), the passthrough proxy (POST /crm/proxy), connection management,
+    metadata, and webhooks are all plain HTTPS REST. Requests are authenticated
+    with the x-revert-api-token header and scoped to a customer connection via
+    the x-revert-t-id (tenant) header. Revert is self-hostable via Docker; when
+    self-hosted the same REST surface runs against your own deployment. No
+    WebSocket (ws:// or wss://) or SSE streaming endpoint is documented; the
+    only push mechanism is outbound HTTP webhooks.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://api.revert.dev
+      documented: true
+    - protocol: Webhooks
+      scheme: https
+      note: Outbound HTTP callbacks to a subscriber URL on connection/record events. One-directional server-to-consumer HTTP POST, not WebSocket.
+      documented: true
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented in Revert's API reference.
+  endpointsConfirmedRest:
+    - GET    https://api.revert.dev/crm/ping
+    - GET    https://api.revert.dev/connections
+    - GET    https://api.revert.dev/connection
+    - DELETE https://api.revert.dev/connection
+    - GET    https://api.revert.dev/metadata/crms
+    - GET    https://api.revert.dev/crm/contacts
+    - POST   https://api.revert.dev/crm/contacts
+    - GET    https://api.revert.dev/crm/contacts/{id}
+    - PATCH  https://api.revert.dev/crm/contacts/{id}
+    - POST   https://api.revert.dev/crm/contacts/search
+    - GET    https://api.revert.dev/crm/leads
+    - GET    https://api.revert.dev/crm/deals
+    - GET    https://api.revert.dev/crm/companies
+    - GET    https://api.revert.dev/crm/notes
+    - GET    https://api.revert.dev/crm/tasks
+    - GET    https://api.revert.dev/crm/events
+    - GET    https://api.revert.dev/crm/users
+    - GET    https://api.revert.dev/crm/properties/{object}
+    - POST   https://api.revert.dev/crm/proxy
+    - GET    https://api.revert.dev/webhooks
+    - POST   https://api.revert.dev/webhooks
+sources:
+  - url: https://docs.revert.dev
+    type: Documentation
+    note: Getting started and API reference describe an HTTPS REST API at api.revert.dev with x-revert-api-token and x-revert-t-id headers.
+  - url: https://docs.revert.dev/api-reference/api-reference/crm
+    type: APIReference
+    note: Unified CRM resources (contact, lead, deal, company, note, task, event, user, proxy, properties) are all REST.
+  - url: https://github.com/revertinc/revert
+    type: SourceCode
+    note: AGPL-3.0 licensed, self-hostable via Docker; confirms the open-source nature and integration categories.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket or SSE protocol surface exists, so no AsyncAPI document was
+    authored. The only asynchronous mechanism is outbound HTTP webhooks, which
+    are modeled as a REST resource in the OpenAPI document
+    (openapi/revert-dev-openapi.yml).
