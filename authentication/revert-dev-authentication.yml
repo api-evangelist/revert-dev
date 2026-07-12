@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/revert-dev-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: revertApiToken
+  type: apiKey
+  in: header
+  parameter: x-revert-api-token
+  description: Your Revert API key (private token used from your backend).
+  sources:
+  - openapi/revert-dev-openapi.yml
