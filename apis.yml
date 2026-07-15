@@ -287,6 +287,8 @@ apis:
   description: Register and manage webhook subscriptions so Revert can notify your backend
     when connection and record events happen across connected third-party tools.
 common:
+- type: AgenticAccess
+  url: agentic-access/revert-dev-agentic-access.yml
 - type: Authentication
   url: authentication/revert-dev-authentication.yml
 - type: GitHubOrganization
