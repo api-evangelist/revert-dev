@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Revert Unified Connection CRM Proxy API
+  description: Revert is an open-source unified API for building product integrations. This specification describes the hosted REST surface at api.revert.dev, focused on the unified CRM category (contacts, leads, deals, companies, notes, tasks, events, users), the passthrough proxy, connection management, integration metadata, and webhooks. All CRM requests are authenticated with an `x-revert-api-token` (your Revert API key) and target a specific customer connection via `x-revert-t-id` (the tenant id captured when the customer linked their third-party tool through Revert's managed OAuth flow). Revert is AGPL-3.0 licensed and can be self-hosted.
+  termsOfService: https://revert.dev
+  contact:
+    name: Revert
+    url: https://revert.dev
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: '1.0'
+servers:
+- url: https://api.revert.dev
+  description: Revert hosted API
+security:
+- revertApiToken: []
+tags:
+- name: CRM Proxy
+paths:
+  /crm/proxy:
+    post:
+      tags:
+      - CRM Proxy
+      operationId: crmProxy
+      summary: Passthrough a raw request to the connected provider's native API.
+      description: Forwards the supplied path, method, and body to the underlying connected CRM using Revert's managed OAuth token, for provider-specific endpoints not yet covered by the unified model.
+      parameters:
+      - $ref: '#/components/parameters/TenantId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProxyRequest'
+      responses:
+        '200':
+          description: Raw provider response, passed through.
+          content:
+            application/json:
+              schema:
+                type: object
+components:
+  schemas:
+    ProxyRequest:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Provider-native path to call, appended to the connected tool's base URL.
+        method:
+          type: string
+          enum:
+          - GET
+          - POST
+          - PUT
+          - PATCH
+          - DELETE
+        body:
+          type: object
+          description: Request body to forward to the provider.
+  parameters:
+    TenantId:
+      name: x-revert-t-id
+      in: header
+      required: true
+      description: The unique customer/tenant id used when the customer linked their account.
+      schema:
+        type: string
+  securitySchemes:
+    revertApiToken:
+      type: apiKey
+      in: header
+      name: x-revert-api-token
+      description: Your Revert API key (private token used from your backend).

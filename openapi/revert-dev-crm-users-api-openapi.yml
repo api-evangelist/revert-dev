@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Revert Unified Connection CRM Users API
+  description: Revert is an open-source unified API for building product integrations. This specification describes the hosted REST surface at api.revert.dev, focused on the unified CRM category (contacts, leads, deals, companies, notes, tasks, events, users), the passthrough proxy, connection management, integration metadata, and webhooks. All CRM requests are authenticated with an `x-revert-api-token` (your Revert API key) and target a specific customer connection via `x-revert-t-id` (the tenant id captured when the customer linked their third-party tool through Revert's managed OAuth flow). Revert is AGPL-3.0 licensed and can be self-hosted.
+  termsOfService: https://revert.dev
+  contact:
+    name: Revert
+    url: https://revert.dev
+  license:
+    name: AGPL-3.0
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: '1.0'
+servers:
+- url: https://api.revert.dev
+  description: Revert hosted API
+security:
+- revertApiToken: []
+tags:
+- name: CRM Users
+paths:
+  /crm/users:
+    get:
+      tags:
+      - CRM Users
+      operationId: getUsers
+      summary: List CRM users (record owners) from the connected CRM.
+      parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/Cursor'
+      - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: A page of users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnifiedListResponse'
+  /crm/users/{id}:
+    get:
+      tags:
+      - CRM Users
+      operationId: getUser
+      summary: Get a single CRM user by id.
+      parameters:
+      - $ref: '#/components/parameters/Id'
+      - $ref: '#/components/parameters/TenantId'
+      responses:
+        '200':
+          description: The user.
+components:
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: The unified record id.
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor returned by a previous list response.
+      schema:
+        type: string
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: Number of records to return per page.
+      schema:
+        type: integer
+    TenantId:
+      name: x-revert-t-id
+      in: header
+      required: true
+      description: The unique customer/tenant id used when the customer linked their account.
+      schema:
+        type: string
+  schemas:
+    UnifiedListResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        next:
+          type: string
+          nullable: true
+          description: Cursor for the next page, or null when there are no more records.
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            type: object
+  securitySchemes:
+    revertApiToken:
+      type: apiKey
+      in: header
+      name: x-revert-api-token
+      description: Your Revert API key (private token used from your backend).
